@@ -12,32 +12,51 @@ namespace SummationOfPowerSeries
         }
         public List<double> ResultsList { get; private set; }
         public List<double> ResultsList2 { get; private set; }
-        public void CountUsingFormula(double x,int n)
+        public int CountUsingFormula(double x,int numberOfElementsToAdd)
         {
 
-            double tmpX = x-1;
+            double tmpX = x - 1;
             double tmp = tmpX;
+            int counter = 2;
             ResultsList.Clear();
             ResultsList.Add(tmpX);
-            for (int i = 2; i <= n; i++)
+            do
             {
+
                 tmp = tmp * tmpX * (-1);
-                ResultsList.Add(tmp/i);
-            }
+                ResultsList.Add(tmp / counter);
+                counter += numberOfElementsToAdd;
+
+            } while (!IsAccurateEnought(tmpX, tmp,counter));
+
+            return counter;
         }
 
-        public void CountUsingPreviousResult(double x, int n)
+        private bool IsAccurateEnought(double tmpX, double tmp,int counter)
+        {
+            if((tmp * tmpX * (-1))/counter < 0)
+                return (tmp * tmpX * (-1)) / counter > -0.000001;
+            else
+                return (tmp * tmpX * (-1))/counter < 0.000001;
+        }
+
+        public int CountUsingPreviousResult(double x, int numberOfElementsToAdd)
         {
             ResultsList2.Clear();
             double tmpX = x - 1;
             ResultsList2.Add(tmpX);
-            for (int i = 1; i < n; i++)
+            int counter = 2;
+
+            do
             {
-                var tmp = tmpX * ((-1) * i * (x - 1)) / (i + 1);
+                var tmp = tmpX * ((-1) * counter * (x - 1)) / (counter + 1);
                 tmpX = tmp;
                 ResultsList2.Add(tmp);
-            }
+                counter += numberOfElementsToAdd;
 
+            } while (!(tmpX<0 && tmpX > -0.000001 || tmpX >0 && tmpX < 0.000001));
+
+             return counter;
         }
 
         public double SumFromBeginning(List<double> resultsList)
@@ -68,10 +87,13 @@ namespace SummationOfPowerSeries
         {
             var rtnList = new List<double>();
             var random = new Random();
+            double number = 0;
+            double numberToIncrease = 0.0000002;
             for (int i = 0; i < amount; i++)
-            {
-                double randomNumber = random.NextDouble() * 2;
-                rtnList.Add(randomNumber);
+            { 
+                number += numberToIncrease‬;
+                //double randomNumber = random.NextDouble() * 2;
+                rtnList.Add(number);
             }
 
             return rtnList;

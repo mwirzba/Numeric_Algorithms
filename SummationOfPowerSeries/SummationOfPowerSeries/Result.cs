@@ -8,7 +8,7 @@ namespace SummationOfPowerSeries
 {
     class Result
     {
-        public int NumberOfAddedWords { get; set; }
+        public double NumberOfAddedWords { get; set; }
         public double AlgorithmResult { get; set; }
 
     }

@@ -3,75 +3,91 @@ using System.Collections.Generic;
 
 namespace SummationOfPowerSeries
 {
-    class Algorithm
+    static class Algorithm
     {
-        public Algorithm()
+        public static List<double> CountUsingFormula(double x,int numberOfElements)
         {
-           ResultsList =  new List<double>();
-           ResultsList2 = new List<double>();
-        }
-        public List<double> ResultsList { get; private set; }
-        public List<double> ResultsList2 { get; private set; }
-        public int CountUsingFormula(double x,int numberOfElementsToAdd)
-        {
+            var resultsList = new List<double>();
+            double firstElement = x - 1;
+            double xToThePower = firstElement;
+            resultsList.Clear();
+            resultsList.Add(firstElement);
+            for (int i = 2; i <= numberOfElements; i++)
+            {
+                xToThePower = xToThePower * firstElement * (-1);
+                resultsList.Add(xToThePower / i);
+            }
 
-            double tmpX = x - 1;
-            double tmp = tmpX;
-            int counter = 2;
-            ResultsList.Clear();
-            ResultsList.Add(tmpX);
+            return resultsList;
+        }
+
+        public static int CountUsingFormula(double x,List<double> resultsList)
+        {
+            resultsList.Clear();
+            double firstElement = x - 1;
+            double xToThePower = firstElement;
+            int counter = 1;
             do
             {
+                resultsList.Add(xToThePower / counter);
+                xToThePower = xToThePower * firstElement * (-1);
+                counter++;
 
-                tmp = tmp * tmpX * (-1);
-                ResultsList.Add(tmp / counter);
-                counter += numberOfElementsToAdd;
-
-            } while (!IsAccurateEnought(tmpX, tmp,counter));
+            } while (!IsNextElementAccurateEnough(xToThePower / counter));
 
             return counter;
         }
 
-        private bool IsAccurateEnought(double tmpX, double tmp,int counter)
+        public static List<double> CountUsingPreviousElement(double x, int numberOfElements)
         {
-            if((tmp * tmpX * (-1))/counter < 0)
-                return (tmp * tmpX * (-1)) / counter > -0.000001;
-            else
-                return (tmp * tmpX * (-1))/counter < 0.000001;
-        }
+            
+            var resultsList = new List<double>();
+            double element = x - 1;
+            resultsList.Add(element);
+            for (int i = 1; i < numberOfElements; i++)
+            {
+                element = element * ((-1) * i * (x - 1)) / (i + 1);
+                resultsList.Add(element);
+            }
 
-        public int CountUsingPreviousResult(double x, int numberOfElementsToAdd)
+            return resultsList;
+        }
+                
+        public static int CountUsingPreviousElement(double x,List<double> resultsList)
         {
-            ResultsList2.Clear();
-            double tmpX = x - 1;
-            ResultsList2.Add(tmpX);
-            int counter = 2;
+            resultsList.Clear();
+            double element = x - 1;
+            resultsList.Add(element);
+            int counter = 1;
 
             do
             {
-                var tmp = tmpX * ((-1) * counter * (x - 1)) / (counter + 1);
-                tmpX = tmp;
-                ResultsList2.Add(tmp);
-                counter += numberOfElementsToAdd;
+                element = element * ((-1) * counter * (x - 1))/(counter + 1);
+                resultsList.Add(element);
+                counter++;
 
-            } while (!(tmpX<0 && tmpX > -0.000001 || tmpX >0 && tmpX < 0.000001));
+            } while (!IsNextElementAccurateEnough(element));
 
              return counter;
         }
 
-        public double SumFromBeginning(List<double> resultsList)
+        private static bool IsNextElementAccurateEnough(double element)
+        {
+            return (element < 0 && element > -0.000001 || element > 0 && element < 0.000001);
+        }
+
+        public static double GetSumFromBegin(List<double> resultsList)
         {
             double result=0;
             for (int i = 0; i<resultsList.Count; i++)
             {
-
                 result += resultsList[i];
             }
 
             return result;
         }
 
-        public double SumFromEnd(List<double> resultsList)
+        public static double GetSumFromEnd(List<double> resultsList)
         {
             double result = 0;
             for (int i = resultsList.Count-1; i >= 0; i--)
@@ -83,18 +99,25 @@ namespace SummationOfPowerSeries
             return result;
         }
 
-        public List<double> GetArgumentsList(double amount)
+        public static List<double> GetArgumentsList(double amount, bool getRandomArguments,double numberToIncrease=0)
         {
             var rtnList = new List<double>();
             var random = new Random();
             double number = 0;
-            double numberToIncrease = 0.0000002;
-            for (int i = 0; i < amount; i++)
-            { 
-                number += numberToIncrease‬;
-                //double randomNumber = random.NextDouble() * 2;
-                rtnList.Add(number);
-            }
+            if(!getRandomArguments)
+
+                for (int i = 0; i < amount; i++)
+                { 
+                    number += numberToIncrease;
+                    rtnList.Add(number);
+                }
+            else
+                for (int i = 0; i < amount; i++)
+                {
+                    double randomNumber = random.NextDouble() * 2;
+                    rtnList.Add(randomNumber);
+                }
+
 
             return rtnList;
 

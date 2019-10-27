@@ -16,12 +16,24 @@ namespace Alg2
             Matrix = new []
             {
                 //new float[] { 2, 1, 1, 7 } , new float[] { 0, 2, 1, 4 } , new float[] { 1, 1, 2, 6 }
-               new float[] { 4,-2,4,-2,8 }, new float[] {3,1,4,2,7 },new float[] {2,4,2,1,10},new float[] {2,-2,4,2,2}
+              // new float[] { 1, 1/2f , 1/3f , 32 } , new float[] { 1/2f, 1/3f, 1/4f, 22 } , new float[] { 1/3f, 1/4f, 1/5f, 17 }
+                 new float[] { 1.00f, 0.5f , 0.33f , 32 } , new float[] { 0.5f, 0.33f, 0.25f, 22 } , new float[] { 0.33f, 0.25f, 0.20f, 17 }
+
+               //new float[] { 4,-2,4,-2,8 }, new float[] {3,1,4,2,7 },new float[] {2,4,2,1,10},new float[] {2,-2,4,2,2}
             };          
             //new float[,] { { 4,-2,4,-2,8 },{3,1,4,2,7 }, {2,4,2,1,10}, {2,-2,4,2,2} };                
             //new float[NumberOfElements,NumberOfElements+1];
             VectorX = new float[NumberOfElements];
 
+            MatrixCopy =  new float[NumberOfElements][];
+            for (int i = 0; i < Matrix.Length; i++)
+            {
+                MatrixCopy[i] = new float[Matrix[i].Length];
+                Array.Copy(Matrix[i],MatrixCopy[i],Matrix[i].Length);
+            }
+          //  Array.Copy(Matrix,MatrixCopy,Matrix.Length);
+
+            PrintMatrix(MatrixCopy);
            /* for (int i = 0; i < numberOfElements; i++)
             {
                 Console.WriteLine(Matrix[][0]);
@@ -32,13 +44,13 @@ namespace Alg2
 
         }
 
-        private void PrintMatrix()
+        private void PrintMatrix(float[][] matrix)
         {
-            for (int i = 0; i < Matrix.Length; i++)
+            for (int i = 0; i < matrix.Length; i++)
             {
-                for (int j = 0; j < Matrix[i].Length; j++)
+                for (int j = 0; j < matrix[i].Length; j++)
                 {
-                    Console.Write(" "+Matrix[i][j]+" ");
+                    Console.Write(" "+ matrix[i][j]+" ");
                 }
 
                 Console.WriteLine();
@@ -51,6 +63,8 @@ namespace Alg2
         public float[] VectorX { get; set; }
         public float[][] Matrix { get; set; }
 
+        public float[][] MatrixCopy { get; set; }
+
         
         private bool SwapRowWithZero(int i,int j,float accuracy)
         {
@@ -59,12 +73,12 @@ namespace Alg2
                 if (Math.Abs(Matrix[k][j]) > accuracy)
                 {
                     Console.WriteLine("Before");
-                    PrintMatrix();
+                    PrintMatrix(Matrix);
                     float[] tmp = Matrix[i];
                     Matrix[i] = Matrix[k];
                     Matrix[k] = tmp;
                     Console.WriteLine("After");
-                    PrintMatrix();
+                    PrintMatrix(Matrix);
                     return true;
                 }
             }
@@ -89,7 +103,7 @@ namespace Alg2
                         bool success = SwapRowWithZero(i, i, accuracy);
                         if (success==false)
                         {
-                           // VectorX[i] = 0;
+                            VectorX[i] = 0;
                             break;
                         }
 
@@ -107,7 +121,7 @@ namespace Alg2
 
             for (int i = NumberOfElements -1; i >= 0; i--)
             {
-                PrintMatrix();
+               // PrintMatrix();
 
                 sumOfMultipliers = Matrix[i][NumberOfElements];
 
@@ -125,12 +139,37 @@ namespace Alg2
             return true;
         }
 
-        public void PrintResult()
+        public void PrintResult(float[] result)
         {
             for (int i = 0; i < NumberOfElements ; i++)
             {
-                Console.WriteLine("x"+i+1+"=   "+VectorX[i]);
+                int tmp = i+1;
+                Console.WriteLine("x"+tmp+"=   "+result[i]);
+
+
             }
+
+        }
+
+
+
+        public float[] CalculateError()
+        {
+            float[] diff =  new float[Matrix.Length];
+            float result = 0;
+            for (int i = 0; i < Matrix.Length; i++)
+            {
+                
+                for (int j = 0; j < Matrix[i].Length-1; j++)
+                {
+                    result += VectorX[j] * MatrixCopy[i][j];
+                }
+
+                diff[i] = MatrixCopy[i][Matrix.Length] - result;
+                result = 0;
+            }
+
+            return diff;
 
         }
 

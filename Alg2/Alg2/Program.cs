@@ -10,12 +10,18 @@ namespace Alg2
     {
         static void Main(string[] args)
         {
-           Algorithm algorithm =  new Algorithm(4);
+           Algorithm algorithm =  new Algorithm(3);
             float accuracy = 0.0001f;
+            
             if (algorithm.GaussElimination(0))
             {
-                algorithm.PrintResult();
+                algorithm.PrintResult(algorithm.VectorX);
+                var rtn = algorithm.CalculateError();
+                Console.WriteLine();
+                algorithm.PrintResult(rtn);
             }
+
+          
 
             Console.ReadKey();
         }

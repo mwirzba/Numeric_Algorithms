@@ -42,7 +42,6 @@ namespace SummationOfPowerSeries
             
             #endregion
 
-
             #region H2
             
             var errors = GetDiffInResultByNumberOfElementsAdded(argumentsList,maxNumberOfAddedElements);
